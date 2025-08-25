@@ -1,14 +1,17 @@
 import { NextResponse } from "next/server";
 import { prisma } from "../../lib/prisma";
-import { verifySession } from "../../lib/auth";
+import { getServerSession } from "next-auth";
+import { authOptions } from "../../lib/nextauth";
 
 // GET /api/books → list my books
 export async function GET() {
-  const session = verifySession();
-  if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  const session = await getServerSession(authOptions);
+  if (!session?.user?.id) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
 
   const books = await prisma.book.findMany({
-    where: { userId: session.sub },
+    where: { userId: session.user.id },
     orderBy: { createdAt: "desc" },
   });
 
@@ -17,8 +20,10 @@ export async function GET() {
 
 // POST /api/books → create a book
 export async function POST(req: Request) {
-  const session = verifySession();
-  if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  const session = await getServerSession(authOptions);
+  if (!session?.user?.id) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
 
   const { title, author, genre } = await req.json();
 
@@ -31,7 +36,7 @@ export async function POST(req: Request) {
       title,
       author,
       genre,
-      userId: session.sub,
+      userId: session.user.id,
     },
   });
 
