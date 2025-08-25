@@ -13,8 +13,9 @@ return jwt.sign(payload, SECRET, { expiresIn: "7d" });
 }
 
 
-export function verifySession(): JWTPayload | null {
-const token = cookies().get("session")?.value;
+export async function verifySession(): Promise<JWTPayload | null> {
+const cookieStore = await cookies();
+const token = cookieStore.get("session")?.value;
 if (!token) return null;
 try {
 return jwt.verify(token, SECRET) as JWTPayload;

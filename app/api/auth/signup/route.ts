@@ -1,0 +1,45 @@
+import { NextResponse } from "next/server";
+import { prisma } from "@/app/lib/prisma";
+import { z } from "zod";
+import bcrypt from "bcryptjs";
+import { signSession } from "@/app/lib/auth";
+
+const Body = z.object({
+  email: z.string().email(),
+  password: z.string().min(6),
+  name: z.string().min(1).optional(),
+});
+
+export async function POST(req: Request) {
+  try {
+    const json = await req.json();
+    const { email, password, name } = Body.parse(json);
+
+    const existing = await prisma.user.findUnique({ where: { email } });
+    if (existing) {
+      return NextResponse.json({ error: "Email already in use" }, { status: 409 });
+    }
+
+    const hash = await bcrypt.hash(password, 10);
+    const user = await prisma.user.create({ data: { email, password: hash, name } });
+
+    const token = signSession({ sub: user.id, email: user.email, name: user.name ?? undefined });
+
+    const res = NextResponse.json({
+      user: { id: user.id, email: user.email, name: user.name },
+    }, { status: 201 });
+
+    res.cookies.set("session", token, {
+      httpOnly: true,
+      sameSite: "lax",
+      secure: process.env.NODE_ENV === "production",
+      path: "/",
+      maxAge: 60 * 60 * 24 * 7, // 7 days
+    });
+
+    return res;
+  } catch (err: unknown) {
+    const errorMessage = err instanceof Error ? err.message : "Invalid request";
+    return NextResponse.json({ error: errorMessage }, { status: 400 });
+  }
+} 

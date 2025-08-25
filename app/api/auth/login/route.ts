@@ -1,8 +1,8 @@
 import { NextResponse } from "next/server";
-import { prisma } from "@/lib/prisma";
+import { prisma } from "@/app/lib/prisma";
 import { z } from "zod";
 import bcrypt from "bcryptjs";
-import { signSession } from "@/lib/auth";
+import { signSession } from "@/app/lib/auth";
 
 
 const Body = z.object({
@@ -43,7 +43,8 @@ maxAge: 60 * 60 * 24 * 7,
 
 
 return res;
-} catch (err: any) {
-return NextResponse.json({ error: err.message ?? "Invalid request" }, { status: 400 });
+} catch (err: unknown) {
+const errorMessage = err instanceof Error ? err.message : "Invalid request";
+return NextResponse.json({ error: errorMessage }, { status: 400 });
 }
 }
