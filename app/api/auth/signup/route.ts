@@ -5,9 +5,9 @@ import bcrypt from "bcryptjs";
 import { signSession } from "@/app/lib/auth";
 
 const Body = z.object({
-  email: z.string().email(),
-  password: z.string().min(6),
-  name: z.string().min(1).optional(),
+  email: z.string().email("Please enter a valid email address"),
+  password: z.string().min(6, "Password must be at least 6 characters long"),
+  name: z.string().min(1, "Name is required").optional(),
 });
 
 export async function POST(req: Request) {
@@ -39,7 +39,27 @@ export async function POST(req: Request) {
 
     return res;
   } catch (err: unknown) {
-    const errorMessage = err instanceof Error ? err.message : "Invalid request";
+    // Handle Zod validation errors specifically
+    if (err instanceof z.ZodError) {
+      const errors = err.errors.map(error => {
+        // Map field names to user-friendly labels
+        const fieldMap: Record<string, string> = {
+          email: "Email",
+          password: "Password",
+          name: "Name"
+        };
+        
+        const fieldName = fieldMap[error.path[0] as string] || error.path[0];
+        return `${fieldName}: ${error.message}`;
+      });
+      
+      return NextResponse.json({ 
+        error: errors.join(", ") 
+      }, { status: 400 });
+    }
+    
+    // Handle other errors
+    const errorMessage = err instanceof Error ? err.message : "Something went wrong. Please try again.";
     return NextResponse.json({ error: errorMessage }, { status: 400 });
   }
 } 
