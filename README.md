@@ -1,36 +1,49 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 📚 Book Catalog  
 
-## Getting Started
+A full-stack **Book Catalog** web application built with **Next.js 13 (App Router)**, **Prisma ORM**, **PostgreSQL (Neon)**, and **JWT-based authentication**.  
+The app allows users to **sign up, log in, and manage books** in a personal catalog.  
 
-First, run the development server:
+Deployed on **Vercel**.  
 
+---
+
+## 🚀 Live Demo
+🔗 [Book Catalog on Vercel](https://book-catalog-zeta.vercel.app/)  
+
+---
+
+## ✨ Features
+- 🔑 **Authentication**: Signup, login, and logout using JWT stored in secure cookies.  
+- 📚 **Book Management**: Add, list, and delete books (CRUD).  
+- 🔒 **Protected Routes**: Middleware ensures only authenticated users can access `/books`.  
+- 🎨 **UI/UX**: Responsive interface styled with Tailwind CSS.  
+- ⚡ **Deployed** seamlessly with Vercel + Neon (PostgreSQL hosting).  
+
+---
+
+## 🛠️ Tech Stack
+- **Frontend/Backend**: Next.js 13 (App Router)  
+- **ORM**: Prisma  
+- **Database**: PostgreSQL (Neon)  
+- **Auth**: Custom JWT authentication with cookies  
+- **Styling**: Tailwind CSS  
+- **Deployment**: Vercel  
+
+---
+
+## 📦 Setup Instructions (Run Locally)
+
+### 1. Clone the repository
 ```bash
+git clone https://github.com/Alishafa123/book-catalog.git
+cd book-catalog
+
+npm install
+
+DATABASE_URL=postgresql://neondb_owner:npg_uKsvn32dmSeU@ep-still-truth-adhbwpy8-pooler.c-2.us-east-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require
+JWT_SECRET="b2f86c139a63f97adbc6e5cb1575c348f3dbe177e9d6a28cf0490ff0c0f49e3b"
+
+
+npx prisma migrate dev --name init
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
