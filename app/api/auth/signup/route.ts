@@ -41,7 +41,7 @@ export async function POST(req: Request) {
   } catch (err: unknown) {
     // Handle Zod validation errors specifically
     if (err instanceof z.ZodError) {
-      const errors = err.errors.map(error => {
+      const errors = err.issues.map(issue => {
         // Map field names to user-friendly labels
         const fieldMap: Record<string, string> = {
           email: "Email",
@@ -49,8 +49,9 @@ export async function POST(req: Request) {
           name: "Name"
         };
         
-        const fieldName = fieldMap[error.path[0] as string] || error.path[0];
-        return `${fieldName}: ${error.message}`;
+        const pathKey = issue.path[0];
+        const fieldName = typeof pathKey === 'string' ? fieldMap[pathKey] || pathKey : String(pathKey);
+        return `${fieldName}: ${issue.message}`;
       });
       
       return NextResponse.json({ 

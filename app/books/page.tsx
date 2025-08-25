@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Plus, BookOpen, User, Tag, Calendar, Trash2, Edit, Search, Filter } from "lucide-react";
+import { Plus, BookOpen, User, Tag, Calendar, Trash2, Search, Filter } from "lucide-react";
 
 type Book = {
   id: string;
